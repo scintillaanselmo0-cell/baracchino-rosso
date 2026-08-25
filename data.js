@@ -115,16 +115,22 @@ const DATA = {
   },
 
   /* --- MENU ----------------------------------------------------------------
-     Ogni "lista" è una sezione del menu (Take Away, Mediterraneo, Vini...).
-     Ogni voce: nome, prezzo, (facoltativo) descrizione e tag.
-     I tag disponibili: "pesce", "carne", "veg", "firma"
-     ("firma" mette la stellina sui piatti-simbolo).
+     COME FUNZIONA:
+     1) In "liste" definisci OGNI lista una sola volta (Take Away, Antipasti,
+        Vini...). Ogni voce: nome, prezzo, (facoltativo) descrizione e tag.
+        Tag disponibili: "pesce", "carne", "veg", "firma"
+        ("firma" mette la stellina sui piatti-simbolo).
+     2) In "pranzo" e "serate" scrivi solo i NOMI delle liste da mostrare,
+        nell'ordine che vuoi. Così una stessa lista può comparire in entrambe
+        le sezioni: la modifichi in un punto solo e si aggiorna ovunque.
+        Per togliere una lista da una sezione, cancella il suo nome dall'elenco.
   ------------------------------------------------------------------------- */
   menu: {
 
-    // ---- MONDO PRANZO ----
-    pranzo: [
-      {
+    // ============ LE LISTE (definite una volta sola) ============
+    liste: {
+
+      takeaway: {
         titolo: "Take Away · Ristobar",
         sottotitolo: "Tu prendi e porti a tavola. Food · Bar · Stile.",
         voci: [
@@ -140,12 +146,9 @@ const DATA = {
           { nome: "Penne al sugo", prezzo: "5€", tag: ["veg"] },
           { nome: "Pasta al forno", prezzo: "7€" }
         ]
-      }
-    ],
+      },
 
-    // ---- MONDO SERATE ----
-    serate: [
-      {
+      antipasti: {
         titolo: "Menu Mediterraneo · Antipasti",
         voci: [
           { nome: "Insalata di mare", prezzo: "16€", tag: ["pesce"] },
@@ -153,7 +156,8 @@ const DATA = {
           { nome: "Bruschettone stracciata di mozzarella, tartare di gamberi e lime", prezzo: "16€", tag: ["pesce", "firma"] }
         ]
       },
-      {
+
+      primi: {
         titolo: "Menu Mediterraneo · Primi",
         voci: [
           { nome: "Trofie alla Nerano", prezzo: "17€", tag: ["veg", "firma"] },
@@ -161,7 +165,8 @@ const DATA = {
           { nome: "Spaghetti al riccio di mare", prezzo: "23€", tag: ["pesce", "firma"] }
         ]
       },
-      {
+
+      secondi: {
         titolo: "Menu Mediterraneo · Secondi",
         voci: [
           { nome: "Frittura di gamberi, calamari e verdurine", prezzo: "22€", tag: ["pesce", "firma"] },
@@ -169,7 +174,8 @@ const DATA = {
           { nome: "Black Angus con patate al forno", prezzo: "27€", tag: ["carne"] }
         ]
       },
-      {
+
+      viniBianchi: {
         titolo: "Carta dei Vini · Bianchi",
         voci: [
           { nome: "Falanghina Sciore", prezzo: "24€" },
@@ -189,13 +195,15 @@ const DATA = {
           { nome: "Chablis Domaine Michaut Frères", prezzo: "45€" }
         ]
       },
-      {
+
+      viniRose: {
         titolo: "Carta dei Vini · Rosé",
         voci: [
           { nome: "Federica Vitis Aurunca", prezzo: "35€" }
         ]
       },
-      {
+
+      bollicine: {
         titolo: "Carta dei Vini · Bollicine",
         voci: [
           { nome: "Exilia Colli Ramati", prezzo: "35€" },
@@ -209,7 +217,12 @@ const DATA = {
           { nome: "Champagne Moët Ice Rosé", prezzo: "180€" }
         ]
       }
-    ]
+    },
+
+    // ============ QUALI LISTE MOSTRARE IN OGNI SEZIONE ============
+    // Scrivi i nomi delle liste, nell'ordine che vuoi.
+    pranzo: ["takeaway", "antipasti", "primi", "secondi"],
+    serate: ["antipasti", "primi", "secondi", "viniBianchi", "viniRose", "bollicine"]
   },
 
   /* --- EVENTI --------------------------------------------------------------

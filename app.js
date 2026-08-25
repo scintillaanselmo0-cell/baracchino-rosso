@@ -122,8 +122,11 @@
 
   /* ---------- MENU -------------------------------------------------------- */
   const tagLabel = { pesce: "Pesce", carne: "Carne", veg: "Veg" };
-  function menuHTML(lists) {
-    return lists.map(list => {
+  function menuHTML(nomiListe) {
+    const liste = (nomiListe || [])
+      .map(nome => DATA.menu.liste[nome])
+      .filter(Boolean);            // ignora eventuali nomi scritti male
+    return liste.map(list => {
       const items = list.voci.map(v => {
         const star = (v.tag && v.tag.includes("firma")) ? `<span class="star" title="Piatto firma">★</span>` : "";
         const chips = (v.tag || []).filter(t => tagLabel[t])

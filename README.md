@@ -10,8 +10,11 @@ con tre sezioni selezionabili: **Generale · Pranzo · Serate**.
 Apri `data.js` con un editor di testo (o direttamente su GitHub) e cambia ciò che ti serve:
 
 - **Prezzi spiaggia** → sezione `spiaggia`. Scrivi sempre il prezzo tra virgolette: `prezzo: "12€"`.
-- **Menu (pranzo e serate)** → sezione `menu`. Ogni piatto è una riga `{ nome: "...", prezzo: "..." }`.
-  Per mettere la stellina "piatto firma" aggiungi `tag: ["firma"]`. Altri tag: `"pesce"`, `"carne"`, `"veg"`.
+- **Menu (pranzo e serate)** → sezione `menu`. Prima definisci le liste dentro `liste`
+  (ogni piatto è una riga `{ nome: "...", prezzo: "..." }`); poi in `pranzo` e `serate`
+  scrivi solo i **nomi** delle liste da mostrare. Così la stessa lista può stare in entrambe
+  le sezioni e la modifichi una volta sola. Per la stellina "piatto firma" aggiungi
+  `tag: ["firma"]`. Altri tag: `"pesce"`, `"carne"`, `"veg"`.
 - **Orari** → sezione `orari`. Formato 24 ore. Se chiudi dopo mezzanotte metti `"01:00"`: il sito capisce da solo.
   Per un giorno di chiusura: `{ chiuso: true }`.
 - **Eventi / serate** → sezione `eventi`. Copia l'esempio commentato e togli le `//` davanti.
