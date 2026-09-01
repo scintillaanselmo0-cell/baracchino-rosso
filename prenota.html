@@ -201,6 +201,7 @@ function renderForm(){
           </div>
         </div>
 
+        <div id="bookingFields">
         <div class="grp">
           <label class="lab">Persone</label>
           <div class="stepper">
@@ -233,6 +234,8 @@ function renderForm(){
 
         <button class="cta" id="submit">Invia richiesta</button>
         <p class="note">Riceverai conferma dall'attività. La richiesta non è ancora confermata.</p>
+        </div>
+        <div id="fullPanel" class="grp" style="display:none"></div>
       </div>
     </div>`;
 
@@ -251,7 +254,7 @@ function hint(t){
   else if(r.time_from&&r.time_to) h=`${r.time_from}–${r.time_to}`;
   return `<small>${[d,h].filter(Boolean).join(" · ")}</small>`;
 }
-function CFG_phone(){ return CFG && CFG.branding && CFG.branding.phone ? CFG.branding.phone : ""; }
+function CFG_phone(){ return (CFG && (CFG.phone || (CFG.branding && CFG.branding.phone))) || ""; }
 
 function selectType(i){
   SELECTED=i;
@@ -268,9 +271,8 @@ function selectType(i){
   dsel.innerHTML = dates.length
     ? dates.map(d=>`<option value="${ymd(d)}">${esc(fmtDateOpt(d))}</option>`).join("")
     : `<option value="">Nessuna data disponibile</option>`;
-  // orari
-  const tsel=$("#time");
-  tsel.innerHTML = timeSlots(rules).map(t=>`<option value="${t}">${t}</option>`).join("");
+  // orari (con disponibilità per turno)
+  refreshTimes();
   // persone limiti
   PARTY=Math.min(Math.max(2, rules.min_party||1), rules.max_party||20);
   $("#party").textContent=PARTY;
@@ -281,6 +283,54 @@ function selectType(i){
   wireDynamic();
 }
 
+// Ricostruisce gli orari; se il servizio è al completo per la data, mostra il pannello WhatsApp
+async function refreshTimes(){
+  if(SELECTED===null) return;
+  const rules=TYPES[SELECTED].rules||{};
+  const tsel=$("#time");
+  const date=$("#date").value;
+  let avail=null;
+  if(date && rules.capacity){
+    try{
+      const { data } = await sb.rpc("get_availability",{ p_slug:CLIENT_SLUG, p_type_key:TYPES[SELECTED].key, p_date:date });
+      avail = data || null;
+    }catch(e){ avail=null; }
+  }
+
+  if(avail && Number(avail.remaining) <= 0){
+    tsel.innerHTML = `<option>— completo —</option>`;
+    showFull(date);
+    return;
+  }
+
+  hideFull();
+  tsel.innerHTML = timeSlots(rules).map(t=>`<option value="${t}">${t}</option>`).join("");
+  // se restano pochi posti, limita il numero di coperti selezionabili
+  const maxRule = rules.max_party||20;
+  const cap = (avail && avail.remaining) ? Math.min(maxRule, Number(avail.remaining)) : maxRule;
+  $("#dynamic").dataset.max = cap;
+  if(PARTY>cap){ PARTY=cap; $("#party").textContent=PARTY; }
+}
+
+function showFull(date){
+  const bf=$("#bookingFields"); if(bf) bf.style.display="none";
+  const fp=$("#fullPanel"); if(!fp) return;
+  const d = date ? new Date(date+"T00:00:00").toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"}) : "questa data";
+  const phone=(CFG_phone()||"").replace(/\D/g,"");
+  const msg=encodeURIComponent(`Ciao! Vorrei prenotare per ${d} ma il form risulta al completo. Potete verificare la disponibilità?`);
+  fp.style.display="block";
+  fp.innerHTML = `
+    <div style="background:var(--sand); border-radius:14px; padding:20px; text-align:center">
+      <div style="font-weight:700; margin-bottom:6px">Al completo online per ${d}</div>
+      <div style="color:var(--muted); font-size:14px; margin-bottom:16px">Scrivici su WhatsApp: verifichiamo la disponibilità e cerchiamo di trovarti posto.</div>
+      ${phone?`<a class="cta" style="display:inline-block; width:auto; padding-left:28px; padding-right:28px; text-decoration:none" href="https://wa.me/${phone}?text=${msg}" target="_blank" rel="noopener">Scrivici su WhatsApp</a>`:`<div style="color:var(--muted)">Contatta direttamente l'attività.</div>`}
+    </div>`;
+}
+function hideFull(){
+  const fp=$("#fullPanel"); if(fp){ fp.style.display="none"; fp.innerHTML=""; }
+  const bf=$("#bookingFields"); if(bf) bf.style.display="block";
+}
+
 let wired=false;
 function wireDynamic(){
   if(wired) return; wired=true;
@@ -288,6 +338,7 @@ function wireDynamic(){
   $("#minus").addEventListener("click",()=>{ if(PARTY>min()){PARTY--; $("#party").textContent=PARTY;} });
   $("#plus").addEventListener("click", ()=>{ if(PARTY<max()){PARTY++; $("#party").textContent=PARTY;} });
   $("#privacyToggle").addEventListener("click",()=>$("#privacyFull").classList.toggle("show"));
+  $("#date").addEventListener("change", refreshTimes);
   $("#submit").addEventListener("click", submit);
 }
 
@@ -316,7 +367,17 @@ async function submit(){
   btn.disabled=false; btn.textContent="Invia richiesta";
 
   if(error){ return fail("Si è verificato un errore. Riprova o chiamaci."); }
-  if(!data || !data.ok){ return fail(data && data.error ? data.error : "Impossibile completare la prenotazione."); }
+  if(!data || !data.ok){
+    const err = data && data.error ? data.error : "Impossibile completare la prenotazione.";
+    if(/completo|posti/i.test(err)){
+      const ph=(CFG_phone()||"").replace(/\D/g,"");
+      const wmsg=encodeURIComponent(`Ciao! Vorrei prenotare ma risulta al completo per la data scelta. Potete verificare la disponibilità?`);
+      msg.innerHTML = `${err}.${ph?` <a href="https://wa.me/${ph}?text=${wmsg}" target="_blank" rel="noopener" style="color:inherit; text-decoration:underline; font-weight:700">Scrivici su WhatsApp</a> per verificare la disponibilità.`:""}`;
+      msg.style.display="block"; window.scrollTo({top:0,behavior:"smooth"});
+      return;
+    }
+    return fail(err);
+  }
   showDone(name, date, time);
 }
 
