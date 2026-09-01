@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prenota un tavolo</title>
+<style>
+/* =======================================================================
+   FORM DI PRENOTAZIONE â€” l'identitÃ  Ã¨ del CLIENTE (da config).
+   Le variabili --brand / --sand / --accent / il font vengono iniettate
+   a runtime da get_public_config(). Qui sotto solo i default neutri.
+   ===================================================================== */
+:root{
+  --brand:#1c1c1c; --sand:#f3f1ec; --accent:#1c1c1c;
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#e2ddd4; --card:#fff;
+  --cta:var(--brand);              /* diventa --accent quando si sceglie "serata" */
+  --font:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:var(--font); color:var(--ink); background:var(--sand);
+  -webkit-font-smoothing:antialiased; line-height:1.5;
+  min-height:100dvh; display:flex; align-items:flex-start; justify-content:center;
+  padding:28px 16px 48px;
+}
+.card{
+  width:100%; max-width:440px; background:var(--card);
+  border:1px solid var(--line); border-radius:20px; overflow:hidden;
+  box-shadow:0 24px 60px -30px rgba(0,0,0,.35);
+}
+.head{ padding:26px 26px 18px; border-bottom:1px solid var(--line); text-align:center }
+.head img{ max-height:64px; max-width:70%; object-fit:contain; margin-bottom:12px }
+.head .name{ font-weight:800; font-size:22px; letter-spacing:-.02em }
+.head h1{ font-size:15px; font-weight:600; color:var(--muted); margin:6px 0 0 }
+.body{ padding:22px 26px 26px }
+
+label.lab{ display:block; font-size:13px; font-weight:600; color:var(--ink); margin:0 0 8px }
+.grp{ margin-bottom:18px }
+
+/* selezione tipo: card grandi */
+.types{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
+.type{
+  border:1.5px solid var(--line); background:var(--card); border-radius:var(--r);
+  padding:16px 12px; text-align:center; font-weight:700; font-size:15px; color:var(--ink);
+  cursor:pointer; transition:border-color .15s, background .15s, box-shadow .15s;
+}
+.type small{ display:block; font-weight:500; font-size:12px; color:var(--muted); margin-top:4px }
+.type.on{ border-color:var(--cta); background:color-mix(in srgb, var(--cta) 7%, #fff); box-shadow:0 0 0 3px color-mix(in srgb, var(--cta) 16%, transparent) }
+.types.single{ grid-template-columns:1fr }
+
+input.f, select.f, textarea.f{
+  width:100%; padding:13px 14px; font-size:16px; font-family:inherit; color:var(--ink);
+  background:var(--card); border:1.5px solid var(--line); border-radius:12px; outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+input.f:focus, select.f:focus, textarea.f:focus{
+  border-color:var(--cta); box-shadow:0 0 0 3px color-mix(in srgb, var(--cta) 16%, transparent);
+}
+textarea.f{ resize:vertical; min-height:64px }
+.row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+
+.stepper{ display:flex; align-items:center; gap:0; border:1.5px solid var(--line); border-radius:12px; overflow:hidden; width:fit-content }
+.stepper button{ width:46px; height:46px; border:0; background:var(--card); font-size:22px; color:var(--ink); cursor:pointer }
+.stepper button:active{ background:var(--sand) }
+.stepper .val{ min-width:52px; text-align:center; font-size:17px; font-weight:700; font-variant-numeric:tabular-nums }
+
+/* privacy */
+.consent{ display:flex; gap:10px; align-items:flex-start; margin:4px 0 20px; font-size:13px; color:var(--muted) }
+.consent input{ margin-top:2px; width:18px; height:18px; accent-color:var(--cta); flex:0 0 auto }
+.consent a{ color:var(--cta); cursor:pointer; text-decoration:underline }
+.privacy-full{ display:none; font-size:12.5px; color:var(--muted); background:var(--sand); border-radius:12px; padding:14px; margin:-8px 0 18px; line-height:1.55 }
+.privacy-full.show{ display:block }
+
+.cta{
+  width:100%; padding:16px; font-family:inherit; font-size:16px; font-weight:700; color:#fff;
+  background:var(--cta); border:0; border-radius:14px; cursor:pointer; transition:opacity .15s, transform .05s;
+}
+.cta:active{ transform:translateY(1px) }
+.cta[disabled]{ opacity:.5; cursor:default }
+
+.note{ font-size:12px; color:var(--muted); text-align:center; margin-top:14px }
+.msg{ font-size:14px; padding:12px 14px; border-radius:12px; margin-bottom:16px; display:none }
+.msg.err{ display:block; background:#fbeae7; color:#a23b2b; border:1px solid #eecbc4 }
+
+/* schermata di conferma */
+.done{ text-align:center; padding:20px 10px 6px }
+.done .tick{ width:66px; height:66px; border-radius:50%; background:color-mix(in srgb, var(--cta) 12%, #fff); color:var(--cta); display:grid; place-items:center; font-size:34px; margin:0 auto 16px }
+.done h2{ margin:0 0 8px; font-size:20px }
+.done p{ color:var(--muted); margin:0 0 22px }
+.done .again{ background:none; border:1.5px solid var(--line); color:var(--ink); padding:12px 20px; border-radius:12px; font-weight:600; font-family:inherit; cursor:pointer }
+.loading{ text-align:center; color:var(--muted); padding:60px 20px }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="loading" id="boot">Caricoâ€¦</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* =====================================================================
+   CONFIG â€” sostituisci con i tuoi valori. CLIENT_SLUG identifica
+   l'attivitÃ ; puoi anche passarlo via URL: prenota.html?c=slug
+   ===================================================================== */
+const SUPABASE_URL      = "https://qorswaabqqcxpsmngbpo.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_xoKJtS9w_kv_dddgGl8Ycg_BC2UM0w6";
+const CLIENT_SLUG = new URLSearchParams(location.search).get("c") || "baracchino-rosso";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let CFG=null, TYPES=[], SELECTED=null, PARTY=2;
+const $ = s => document.querySelector(s);
+const esc = s => (s??"").toString().replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+/* ---- avvio: carica config del cliente ---- */
+(async()=>{
+  const { data, error } = await sb.rpc("get_public_config",{ p_slug: CLIENT_SLUG });
+  if(error || !data){
+    $("#card").innerHTML = `<div class="body"><div class="msg err" style="display:block">Le prenotazioni online non sono al momento disponibili. Chiamaci per prenotare.</div></div>`;
+    return;
+  }
+  CFG=data; TYPES=data.booking_types||[];
+  applyBranding(data);
+  renderForm();
+})();
+
+/* ---- applica l'identitÃ  del cliente ---- */
+function applyBranding(cfg){
+  const b=cfg.branding||{}, root=document.documentElement.style;
+  if(b.primary)   root.setProperty("--brand", b.primary);
+  if(b.secondary) root.setProperty("--sand",  b.secondary);
+  if(b.accent)    root.setProperty("--accent",b.accent);
+  if(b.font){
+    root.setProperty("--font", `"${b.font}", system-ui, sans-serif`);
+    const l=document.createElement("link"); l.rel="stylesheet";
+    l.href=`https://fonts.googleapis.com/css2?family=${b.font.replace(/ /g,"+")}:wght@400;500;600;700;800&display=swap`;
+    document.head.appendChild(l);
+  }
+}
+
+/* ---- calcolo date valide dalle regole del tipo scelto ---- */
+function allowedDates(rules){
+  const weekdays = rules.weekdays || [1,2,3,4,5,6,7];   // ISO 1=Lun..7=Dom
+  const adv = rules.advance_days ?? 45;
+  const out=[]; const now=new Date();
+  for(let i=0;i<=adv;i++){
+    const d=new Date(now); d.setHours(0,0,0,0); d.setDate(d.getDate()+i);
+    const iso=((d.getDay()+6)%7)+1;                     // JS 0=Dom -> ISO
+    if(weekdays.includes(iso)) out.push(d);
+  }
+  return out;
+}
+function timeSlots(rules){
+  const [fh,fm]=(rules.time_from||"12:00").split(":").map(Number);
+  const [th,tm]=(rules.time_to||"15:00").split(":").map(Number);
+  const step=rules.slot_minutes||30, out=[];
+  let cur=fh*60+fm; const end=th*60+tm;
+  while(cur<=end){ out.push(String(Math.floor(cur/60)).padStart(2,"0")+":"+String(cur%60).padStart(2,"0")); cur+=step; }
+  return out;
+}
+function fmtDateOpt(d){
+  const s=d.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"});
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+
+/* ---- render form ---- */
+function renderForm(){
+  const url=CFG.logo_path ? sb.storage.from("logos").getPublicUrl(CFG.logo_path).data.publicUrl : null;
+  const head = url ? `<img src="${url}" alt="${esc(CFG.name)}" />` : `<div class="name">${esc(CFG.name)}</div>`;
+  const single = TYPES.length<=1 ? "single" : "";
+
+  $("#card").innerHTML = `
+    <div class="head">${head}<h1>Prenota un tavolo</h1></div>
+    <div class="body">
+      <div id="formMsg" class="msg err"></div>
+
+      <div class="grp">
+        <label class="lab">Cosa vuoi prenotare?</label>
+        <div class="types ${single}" id="types">
+          ${TYPES.map((t,i)=>`<div class="type" data-i="${i}">${esc(t.label)}${hint(t)}</div>`).join("")}
+        </div>
+      </div>
+
+      <div id="dynamic" style="display:none">
+        <div class="row2 grp">
+          <div>
+            <label class="lab" for="date">Giorno</label>
+            <select id="date" class="f"></select>
+          </div>
+          <div>
+            <label class="lab" for="time">Orario</label>
+            <select id="time" class="f"></select>
+          </div>
+        </div>
+
+        <div class="grp">
+          <label class="lab">Persone</label>
+          <div class="stepper">
+            <button type="button" id="minus">âˆ’</button>
+            <span class="val" id="party">2</span>
+            <button type="button" id="plus">+</button>
+          </div>
+        </div>
+
+        <div class="grp">
+          <label class="lab" for="name">Nome e cognome</label>
+          <input id="name" class="f" placeholder="Mario Rossi" autocomplete="name" />
+        </div>
+        <div class="grp">
+          <label class="lab" for="phone">Telefono</label>
+          <input id="phone" class="f" type="tel" placeholder="350 142 7341" autocomplete="tel" inputmode="tel" />
+        </div>
+        <div class="grp">
+          <label class="lab" for="notes">Note <span style="color:var(--muted);font-weight:500">(facoltative)</span></label>
+          <textarea id="notes" class="f" placeholder="Allergie, seggiolone, tavolo vista mareâ€¦"></textarea>
+        </div>
+
+        <label class="consent">
+          <input type="checkbox" id="consent" />
+          <span>Ho letto e accetto il trattamento dei miei dati per gestire la prenotazione, ai sensi del GDPR (Reg. UE 2016/679). <a id="privacyToggle">Leggi l'informativa</a></span>
+        </label>
+        <div class="privacy-full" id="privacyFull">
+          I dati che inserisci (nome, telefono, dettagli della prenotazione) sono usati da <b>${esc(CFG.name)}</b>, titolare del trattamento, al solo scopo di gestire e confermare la tua prenotazione. Non vengono ceduti a terzi nÃ© usati per marketing senza un tuo ulteriore consenso. Sono conservati per il tempo necessario alla gestione del servizio. Puoi chiederne in ogni momento accesso, rettifica o cancellazione contattando l'attivitÃ ${CFG_phone()?`, anche via WhatsApp al ${esc(CFG_phone())}`:""}.
+        </div>
+
+        <button class="cta" id="submit">Invia richiesta</button>
+        <p class="note">Riceverai conferma dall'attivitÃ . La richiesta non Ã¨ ancora confermata.</p>
+      </div>
+    </div>`;
+
+  $("#types").addEventListener("click",e=>{ const el=e.target.closest(".type"); if(el) selectType(+el.dataset.i); });
+  if(TYPES.length===1) selectType(0);
+}
+
+function hint(t){
+  const r=t.rules||{}; const wk=r.weekdays||[];
+  const names=["","lun","mar","mer","gio","ven","sab","dom"];
+  let d="";
+  if(wk.length===7) d="tutti i giorni";
+  else if(wk.length) d=wk.map(n=>names[n]).join(", ");
+  const h = (r.time_from&&r.time_to) ? `${r.time_from}â€“${r.time_to}` : "";
+  return `<small>${[d,h].filter(Boolean).join(" Â· ")}</small>`;
+}
+function CFG_phone(){ return CFG && CFG.branding && CFG.branding.phone ? CFG.branding.phone : ""; }
+
+function selectType(i){
+  SELECTED=i;
+  document.querySelectorAll(".type").forEach((el,idx)=>el.classList.toggle("on",idx===i));
+  // accento corallo per la serata, brand per il resto
+  const key=(TYPES[i].key||"").toLowerCase();
+  const cta = /serat|sera|cena|dinner|even/.test(key) ? "var(--accent)" : "var(--brand)";
+  document.documentElement.style.setProperty("--cta", cta);
+
+  const rules=TYPES[i].rules||{};
+  // date
+  const dates=allowedDates(rules);
+  const dsel=$("#date");
+  dsel.innerHTML = dates.length
+    ? dates.map(d=>`<option value="${ymd(d)}">${esc(fmtDateOpt(d))}</option>`).join("")
+    : `<option value="">Nessuna data disponibile</option>`;
+  // orari
+  const tsel=$("#time");
+  tsel.innerHTML = timeSlots(rules).map(t=>`<option value="${t}">${t}</option>`).join("");
+  // persone limiti
+  PARTY=Math.min(Math.max(2, rules.min_party||1), rules.max_party||20);
+  $("#party").textContent=PARTY;
+
+  $("#dynamic").style.display="block";
+  $("#dynamic").dataset.min=rules.min_party||1;
+  $("#dynamic").dataset.max=rules.max_party||20;
+  wireDynamic();
+}
+
+let wired=false;
+function wireDynamic(){
+  if(wired) return; wired=true;
+  const min=()=>+$("#dynamic").dataset.min, max=()=>+$("#dynamic").dataset.max;
+  $("#minus").addEventListener("click",()=>{ if(PARTY>min()){PARTY--; $("#party").textContent=PARTY;} });
+  $("#plus").addEventListener("click", ()=>{ if(PARTY<max()){PARTY++; $("#party").textContent=PARTY;} });
+  $("#privacyToggle").addEventListener("click",()=>$("#privacyFull").classList.toggle("show"));
+  $("#submit").addEventListener("click", submit);
+}
+
+async function submit(){
+  const msg=$("#formMsg"); msg.style.display="none";
+  const name=$("#name").value.trim();
+  const phone=$("#phone").value.trim();
+  const date=$("#date").value;
+  const time=$("#time").value;
+  const notes=$("#notes").value.trim();
+  const consent=$("#consent").checked;
+
+  const fail=t=>{ msg.textContent=t; msg.style.display="block"; window.scrollTo({top:0,behavior:"smooth"}); };
+  if(SELECTED===null) return fail("Scegli cosa prenotare.");
+  if(!date) return fail("Nessuna data disponibile per questa scelta.");
+  if(!name) return fail("Inserisci il tuo nome.");
+  if(!/\d{6,}/.test(phone.replace(/\D/g,""))) return fail("Inserisci un numero di telefono valido.");
+  if(!consent) return fail("Serve il consenso privacy per inviare la richiesta.");
+
+  const btn=$("#submit"); btn.disabled=true; btn.textContent="Invioâ€¦";
+  const { data, error } = await sb.rpc("create_public_booking",{
+    p_slug: CLIENT_SLUG, p_type_key: TYPES[SELECTED].key,
+    p_name: name, p_phone: phone, p_date: date, p_time: time,
+    p_party: PARTY, p_consent: consent, p_notes: notes || null
+  });
+  btn.disabled=false; btn.textContent="Invia richiesta";
+
+  if(error){ return fail("Si Ã¨ verificato un errore. Riprova o chiamaci."); }
+  if(!data || !data.ok){ return fail(data && data.error ? data.error : "Impossibile completare la prenotazione."); }
+  showDone(name, date, time);
+}
+
+function showDone(name,date,time){
+  const d=new Date(date+"T00:00:00").toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"});
+  $("#card").innerHTML = `
+    <div class="body"><div class="done">
+      <div class="tick">âœ“</div>
+      <h2>Richiesta inviata!</h2>
+      <p>Grazie ${esc(name.split(" ")[0])}. Abbiamo ricevuto la tua richiesta per <b>${esc(d)}</b> alle <b>${esc(time)}</b>.<br>L'attivitÃ  ti confermerÃ  a breve.</p>
+      <button class="again" onclick="location.reload()">Nuova prenotazione</button>
+    </div></div>`;
+}
+</script>
+</body>
+</html>
