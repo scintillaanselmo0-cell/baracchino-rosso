@@ -255,5 +255,66 @@ const DATA = {
     { src: "assets/pranzo/food-01.webp", alt: "Spaghetti al riccio di mare" },
     { src: "assets/pranzo/food-02.webp", alt: "Trofie e piatti mediterranei" },
     { src: "assets/pranzo/food-04.webp", alt: "Tartare di pesce servita al tavolo" }
+  ],
+
+  /* --- GALLERIA COMPLETA (pagina galleria.html) ----------------------------
+     Tutte le foto: ambiente + piatti. "cat" serve per i filtri della pagina
+     ("ambiente" o "piatti"). Per aggiungere una foto, copia una riga.
+  ------------------------------------------------------------------------- */
+  galleryFull: [
+    // --- Ambiente: spiaggia, tramonto, terrazza, serate ---
+    { src: "assets/lido/lido-09.webp", alt: "Ombrellone in macramè contro il cielo azzurro", cat: "ambiente" },
+    { src: "assets/lido/lido-04.webp", alt: "File di lettini in bambù con ombrelloni in macramè", cat: "ambiente" },
+    { src: "assets/lido/lido-03.webp", alt: "Cabine e gazebo in legno lungo la spiaggia", cat: "ambiente" },
+    { src: "assets/lido/lido-01.webp", alt: "Piscina con palma e tenda al tramonto", cat: "ambiente" },
+    { src: "assets/lido/lido-05.webp", alt: "Tavoli in terrazza al tramonto sul mare", cat: "ambiente" },
+    { src: "assets/lido/lido-06.webp", alt: "Calici di vino al tramonto sul mare", cat: "ambiente" },
+    { src: "assets/lido/lido-08.webp", alt: "Grande luna luminosa nell'area serale", cat: "ambiente" },
+    { src: "assets/lido/lido-02.webp", alt: "Insegna al neon Baracchino Rosso", cat: "ambiente" },
+    { src: "assets/lido/lido-07.webp", alt: "Insegna lavagna con il logo del lido", cat: "ambiente" },
+    { src: "assets/gallery/g-12.webp", alt: "Frutta fresca con vista mare dalla terrazza", cat: "ambiente" },
+    { src: "assets/gallery/g-13.webp", alt: "Dessert di frutta con il mare sullo sfondo", cat: "ambiente" },
+    { src: "assets/gallery/g-14.webp", alt: "Terrazza con tavoli sotto la tettoia di paglia", cat: "ambiente" },
+    { src: "assets/gallery/g-16.webp", alt: "Tavoli apparecchiati in riva al mare al tramonto", cat: "ambiente" },
+    { src: "assets/gallery/g-18.webp", alt: "La terrazza sul mare pronta per la cena", cat: "ambiente" },
+    // --- Piatti ---
+    { src: "assets/gallery/g-01.webp", alt: "Tagliere di salumi e formaggi", cat: "piatti" },
+    { src: "assets/gallery/g-02.webp", alt: "Plateau di crudi e frutti di mare", cat: "piatti" },
+    { src: "assets/gallery/g-03.webp", alt: "Tagliere di salumi, formaggi e sott'oli", cat: "piatti" },
+    { src: "assets/gallery/g-04.webp", alt: "Plateau di ostriche e frutti di mare", cat: "piatti" },
+    { src: "assets/gallery/g-05.webp", alt: "Tagliere gourmet di salumi e bruschette", cat: "piatti" },
+    { src: "assets/gallery/g-06.webp", alt: "Grande plateau di frutti di mare", cat: "piatti" },
+    { src: "assets/gallery/g-07.webp", alt: "Buffet di taglieri di salumi e formaggi", cat: "piatti" },
+    { src: "assets/gallery/g-08.webp", alt: "Antipasti, olive ascolane e mozzarelle", cat: "piatti" },
+    { src: "assets/gallery/g-09.webp", alt: "Bruschette con stracciata e tartare", cat: "piatti" },
+    { src: "assets/gallery/g-10.webp", alt: "Grigliata di pesce con gamberi", cat: "piatti" },
+    { src: "assets/gallery/g-11.webp", alt: "Tagliata con verdure grigliate", cat: "piatti" },
+    { src: "assets/gallery/g-15.webp", alt: "Grigliata di pesce servita al tavolo", cat: "piatti" },
+    { src: "assets/gallery/g-17.webp", alt: "Tagliata di Black Angus con patate", cat: "piatti" },
+    { src: "assets/gallery/g-19.webp", alt: "Tagliere di salumi condiviso", cat: "piatti" },
+    { src: "assets/gallery/g-20.webp", alt: "Tagliata e patate al forno", cat: "piatti" },
+    { src: "assets/gallery/g-21.webp", alt: "Trofie alla Nerano con calice di bianco", cat: "piatti" },
+    { src: "assets/gallery/g-22.webp", alt: "Spaghetti alle vongole", cat: "piatti" },
+    { src: "assets/gallery/g-23.webp", alt: "Insalata di mare con gamberi e calamari", cat: "piatti" },
+    { src: "assets/gallery/g-24.webp", alt: "Tartare e antipasti di mare", cat: "piatti" },
+    { src: "assets/gallery/g-25.webp", alt: "Tagliere di salumi in condivisione", cat: "piatti" },
+    { src: "assets/gallery/g-26.webp", alt: "Panino gourmet del ristobar", cat: "piatti" },
+    { src: "assets/gallery/g-27.webp", alt: "Bruschette con stracciata e tartare di gamberi", cat: "piatti" },
+    { src: "assets/gallery/g-28.webp", alt: "Trofie alla Nerano", cat: "piatti" },
+    { src: "assets/gallery/g-29.webp", alt: "Spaghetti al riccio con gamberi alla griglia", cat: "piatti" },
+    { src: "assets/gallery/g-30.webp", alt: "Spaghetti allo scoglio", cat: "piatti" },
+    { src: "assets/gallery/g-31.webp", alt: "Frittura di gamberi e calamari", cat: "piatti" },
+    { src: "assets/gallery/g-32.webp", alt: "Ravioli con gamberi e stracciata", cat: "piatti" },
+    { src: "assets/gallery/g-33.webp", alt: "Tagliata di manzo al rosmarino", cat: "piatti" },
+    { src: "assets/gallery/g-34.webp", alt: "Frittura di gamberi e calamari con limone", cat: "piatti" },
+    { src: "assets/gallery/g-35.webp", alt: "Ravioli gourmet con gamberi", cat: "piatti" },
+    { src: "assets/gallery/g-36.webp", alt: "Ravioli con crema di crostacei", cat: "piatti" },
+    { src: "assets/gallery/g-37.webp", alt: "Filetto con riduzione ai frutti rossi", cat: "piatti" },
+    { src: "assets/gallery/g-38.webp", alt: "Tagliata di Black Angus", cat: "piatti" },
+    // --- Piatti già presenti nel sito ---
+    { src: "assets/pranzo/food-03.webp", alt: "Frittura di gamberi e calamari", cat: "piatti" },
+    { src: "assets/pranzo/food-01.webp", alt: "Spaghetti al riccio di mare", cat: "piatti" },
+    { src: "assets/pranzo/food-02.webp", alt: "Trofie e piatti mediterranei", cat: "piatti" },
+    { src: "assets/pranzo/food-04.webp", alt: "Tartare di pesce servita al tavolo", cat: "piatti" }
   ]
 };
