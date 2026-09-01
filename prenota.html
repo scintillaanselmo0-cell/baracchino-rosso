@@ -6,7 +6,7 @@
 <title>Prenota un tavolo</title>
 <style>
 /* =======================================================================
-   FORM DI PRENOTAZIONE â€” l'identitÃ  Ã¨ del CLIENTE (da config).
+   FORM DI PRENOTAZIONE — l'identità è del CLIENTE (da config).
    Le variabili --brand / --sand / --accent / il font vengono iniettate
    a runtime da get_public_config(). Qui sotto solo i default neutri.
    ===================================================================== */
@@ -95,14 +95,14 @@ textarea.f{ resize:vertical; min-height:64px }
 </head>
 <body>
 <div class="card" id="card">
-  <div class="loading" id="boot">Caricoâ€¦</div>
+  <div class="loading" id="boot">Carico…</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* =====================================================================
-   CONFIG â€” sostituisci con i tuoi valori. CLIENT_SLUG identifica
-   l'attivitÃ ; puoi anche passarlo via URL: prenota.html?c=slug
+   CONFIG — sostituisci con i tuoi valori. CLIENT_SLUG identifica
+   l'attività; puoi anche passarlo via URL: prenota.html?c=slug
    ===================================================================== */
 const SUPABASE_URL      = "https://qorswaabqqcxpsmngbpo.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_xoKJtS9w_kv_dddgGl8Ycg_BC2UM0w6";
@@ -127,7 +127,7 @@ const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-$
   renderForm();
 })();
 
-/* ---- applica l'identitÃ  del cliente ---- */
+/* ---- applica l'identità del cliente ---- */
 function applyBranding(cfg){
   const b=cfg.branding||{}, root=document.documentElement.style;
   if(b.primary)   root.setProperty("--brand", b.primary);
@@ -154,11 +154,16 @@ function allowedDates(rules){
   return out;
 }
 function timeSlots(rules){
-  const [fh,fm]=(rules.time_from||"12:00").split(":").map(Number);
-  const [th,tm]=(rules.time_to||"15:00").split(":").map(Number);
   const step=rules.slot_minutes||30, out=[];
-  let cur=fh*60+fm; const end=th*60+tm;
-  while(cur<=end){ out.push(String(Math.floor(cur/60)).padStart(2,"0")+":"+String(cur%60).padStart(2,"0")); cur+=step; }
+  const wins = (rules.windows && rules.windows.length)
+    ? rules.windows
+    : [{ from: rules.time_from||"12:00", to: rules.time_to||"15:00" }];
+  wins.forEach(w=>{
+    const [fh,fm]=w.from.split(":").map(Number);
+    const [th,tm]=w.to.split(":").map(Number);
+    let cur=fh*60+fm; const end=th*60+tm;
+    while(cur<=end){ out.push(String(Math.floor(cur/60)).padStart(2,"0")+":"+String(cur%60).padStart(2,"0")); cur+=step; }
+  });
   return out;
 }
 function fmtDateOpt(d){
@@ -199,7 +204,7 @@ function renderForm(){
         <div class="grp">
           <label class="lab">Persone</label>
           <div class="stepper">
-            <button type="button" id="minus">âˆ’</button>
+            <button type="button" id="minus">−</button>
             <span class="val" id="party">2</span>
             <button type="button" id="plus">+</button>
           </div>
@@ -215,7 +220,7 @@ function renderForm(){
         </div>
         <div class="grp">
           <label class="lab" for="notes">Note <span style="color:var(--muted);font-weight:500">(facoltative)</span></label>
-          <textarea id="notes" class="f" placeholder="Allergie, seggiolone, tavolo vista mareâ€¦"></textarea>
+          <textarea id="notes" class="f" placeholder="Allergie, seggiolone, tavolo vista mare…"></textarea>
         </div>
 
         <label class="consent">
@@ -223,11 +228,11 @@ function renderForm(){
           <span>Ho letto e accetto il trattamento dei miei dati per gestire la prenotazione, ai sensi del GDPR (Reg. UE 2016/679). <a id="privacyToggle">Leggi l'informativa</a></span>
         </label>
         <div class="privacy-full" id="privacyFull">
-          I dati che inserisci (nome, telefono, dettagli della prenotazione) sono usati da <b>${esc(CFG.name)}</b>, titolare del trattamento, al solo scopo di gestire e confermare la tua prenotazione. Non vengono ceduti a terzi nÃ© usati per marketing senza un tuo ulteriore consenso. Sono conservati per il tempo necessario alla gestione del servizio. Puoi chiederne in ogni momento accesso, rettifica o cancellazione contattando l'attivitÃ ${CFG_phone()?`, anche via WhatsApp al ${esc(CFG_phone())}`:""}.
+          I dati che inserisci (nome, telefono, dettagli della prenotazione) sono usati da <b>${esc(CFG.name)}</b>, titolare del trattamento, al solo scopo di gestire e confermare la tua prenotazione. Non vengono ceduti a terzi né usati per marketing senza un tuo ulteriore consenso. Sono conservati per il tempo necessario alla gestione del servizio. Puoi chiederne in ogni momento accesso, rettifica o cancellazione contattando l'attività${CFG_phone()?`, anche via WhatsApp al ${esc(CFG_phone())}`:""}.
         </div>
 
         <button class="cta" id="submit">Invia richiesta</button>
-        <p class="note">Riceverai conferma dall'attivitÃ . La richiesta non Ã¨ ancora confermata.</p>
+        <p class="note">Riceverai conferma dall'attività. La richiesta non è ancora confermata.</p>
       </div>
     </div>`;
 
@@ -241,8 +246,10 @@ function hint(t){
   let d="";
   if(wk.length===7) d="tutti i giorni";
   else if(wk.length) d=wk.map(n=>names[n]).join(", ");
-  const h = (r.time_from&&r.time_to) ? `${r.time_from}â€“${r.time_to}` : "";
-  return `<small>${[d,h].filter(Boolean).join(" Â· ")}</small>`;
+  let h="";
+  if(r.windows && r.windows.length) h=r.windows.map(w=>`${w.from}–${w.to}`).join(" / ");
+  else if(r.time_from&&r.time_to) h=`${r.time_from}–${r.time_to}`;
+  return `<small>${[d,h].filter(Boolean).join(" · ")}</small>`;
 }
 function CFG_phone(){ return CFG && CFG.branding && CFG.branding.phone ? CFG.branding.phone : ""; }
 
@@ -300,7 +307,7 @@ async function submit(){
   if(!/\d{6,}/.test(phone.replace(/\D/g,""))) return fail("Inserisci un numero di telefono valido.");
   if(!consent) return fail("Serve il consenso privacy per inviare la richiesta.");
 
-  const btn=$("#submit"); btn.disabled=true; btn.textContent="Invioâ€¦";
+  const btn=$("#submit"); btn.disabled=true; btn.textContent="Invio…";
   const { data, error } = await sb.rpc("create_public_booking",{
     p_slug: CLIENT_SLUG, p_type_key: TYPES[SELECTED].key,
     p_name: name, p_phone: phone, p_date: date, p_time: time,
@@ -308,7 +315,7 @@ async function submit(){
   });
   btn.disabled=false; btn.textContent="Invia richiesta";
 
-  if(error){ return fail("Si Ã¨ verificato un errore. Riprova o chiamaci."); }
+  if(error){ return fail("Si è verificato un errore. Riprova o chiamaci."); }
   if(!data || !data.ok){ return fail(data && data.error ? data.error : "Impossibile completare la prenotazione."); }
   showDone(name, date, time);
 }
@@ -317,9 +324,9 @@ function showDone(name,date,time){
   const d=new Date(date+"T00:00:00").toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"});
   $("#card").innerHTML = `
     <div class="body"><div class="done">
-      <div class="tick">âœ“</div>
+      <div class="tick">✓</div>
       <h2>Richiesta inviata!</h2>
-      <p>Grazie ${esc(name.split(" ")[0])}. Abbiamo ricevuto la tua richiesta per <b>${esc(d)}</b> alle <b>${esc(time)}</b>.<br>L'attivitÃ  ti confermerÃ  a breve.</p>
+      <p>Grazie ${esc(name.split(" ")[0])}. Abbiamo ricevuto la tua richiesta per <b>${esc(d)}</b> alle <b>${esc(time)}</b>.<br>L'attività ti confermerà a breve.</p>
       <button class="again" onclick="location.reload()">Nuova prenotazione</button>
     </div></div>`;
 }
