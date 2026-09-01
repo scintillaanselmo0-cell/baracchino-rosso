@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Baracchino Rosso · Lido e Ristorante sul mare a Castel Volturno</title>
-<meta name="description" content="Baracchino Rosso, Mediterranean Club a Castel Volturno: spiaggia privata con lettini e piscina di giorno, ristorante di pesce, aperitivo e serate al tramonto. Prenota il tuo ombrellone o il tavolo su WhatsApp.">
+<meta name="description" content="Baracchino Rosso, Mediterranean Club a Castel Volturno: spiaggia privata con lettini e piscina di giorno, ristorante di pesce, aperitivo e serate al tramonto. Prenota il tuo tavolo.">
 <meta name="theme-color" content="#006875">
 <link rel="canonical" href="https://baracchinorosso.it/">
 
@@ -101,11 +101,13 @@
     <p class="hook">Spiaggia privata e piscina sotto il sole, cucina di mare e serate quando il cielo si accende. Due anime, un solo lido.</p>
     <div class="status" id="heroStatus"><span class="dot"></span><span class="txt">—</span></div>
     <div class="hero-cta">
+      <!-- PRENOTAZIONE OMBRELLONE DISATTIVATA (riattivabile in futuro): togli i marcatori di commento per rimetterla.
       <button class="btn btn-wa" data-open="ombrellone">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.7 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.3-.2-2.6.7.7-2.6-.2-.3A8 8 0 0 1 12 4zm4.4 9.6c-.2-.1-1.3-.7-1.5-.8s-.4-.1-.5.1l-.7.9c-.1.1-.2.2-.5.1a6.6 6.6 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3c-.9.9-.7 2.2 0 3.4a9.4 9.4 0 0 0 3.9 3.5c1.4.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1.1s.2-1 .1-1.1z"/></svg>
         Prenota ombrellone
       </button>
-      <button class="btn btn-ghost" data-open="tavolo">Prenota tavolo / serata</button>
+      -->
+      <button class="btn btn-primary" data-open="tavolo">Prenota tavolo / serata</button>
     </div>
   </div>
 </section>
@@ -167,16 +169,18 @@
       <div class="section-head">
         <span class="eyebrow" id="beachPeriod">Listino spiaggia</span>
         <h2 class="section-title">La spiaggia privata</h2>
-        <p class="section-lead">Due aree, un solo mare. Mare per tutti, piscina per i maggiorenni. Prenota il tuo posto su WhatsApp.</p>
+        <p class="section-lead">Due aree, un solo mare. Mare per tutti, piscina per i maggiorenni. Ti aspettiamo in spiaggia.</p>
       </div>
       <div class="beach-grid" id="beachGrid"><!-- JS --></div>
       <div class="incluso" id="beachIncluso"><!-- JS --></div>
+      <!-- PRENOTAZIONE OMBRELLONE DISATTIVATA (riattivabile in futuro): togli i marcatori di commento per rimetterla.
       <div style="margin-top:var(--s-4)">
         <button class="btn btn-wa btn-block" data-open="ombrellone">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.7 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.3-.2-2.6.7.7-2.6-.2-.3A8 8 0 0 1 12 4zm4.4 9.6c-.2-.1-1.3-.7-1.5-.8s-.4-.1-.5.1l-.7.9c-.1.1-.2.2-.5.1a6.6 6.6 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3c-.9.9-.7 2.2 0 3.4a9.4 9.4 0 0 0 3.9 3.5c1.4.6 2 .7 2.7.6.4-.1 1.3-.5 1.5-1.1s.2-1 .1-1.1z"/></svg>
           Prenota ombrellone su WhatsApp
         </button>
       </div>
+      -->
     </div>
   </section>
 
@@ -267,8 +271,13 @@
       <div class="menu-list" id="menuPranzo"><!-- JS --></div>
       <p class="menu-note">Il take away e il servizio bar sono attivi al lettino durante l'orario della spiaggia; il menù mediterraneo è servito ai tavoli. I piatti con la stellina sono i più amati. Per ordinazioni e info scrivici su WhatsApp.</p>
       <div style="margin-top:var(--s-4)">
+        <button class="btn btn-primary btn-block" data-open="tavolo">Prenota un tavolo</button>
+      </div>
+      <!-- PRENOTAZIONE OMBRELLONE DISATTIVATA (riattivabile in futuro): togli i marcatori di commento per rimetterla.
+      <div style="margin-top:var(--s-4)">
         <button class="btn btn-wa btn-block" data-open="ombrellone">Prenota il tuo posto in spiaggia</button>
       </div>
+      -->
     </div>
   </section>
 
@@ -360,18 +369,30 @@
 
 <!-- STICKY DOCK (mobile) -->
 <div class="dockbar">
+  <!-- PRENOTAZIONE OMBRELLONE DISATTIVATA (riattivabile in futuro): togli i marcatori di commento per rimetterla.
   <button class="btn btn-wa" data-open="ombrellone">Ombrellone</button>
+  -->
   <button class="btn btn-primary" data-open="tavolo">Tavolo / Serata</button>
 </div>
 
-<!-- MODALE PRENOTAZIONE -->
+<!-- ================================================================
+     MODALE PRENOTAZIONE (OMBRELLONE) — DISATTIVATA
+     La prenotazione ombrelloni è stata rimossa temporaneamente.
+     Per RIATTIVARLA in futuro:
+       1) togli i marcatori di commento di questo blocco;
+       2) riattiva i pulsanti "Ombrellone" (cerca "PRENOTAZIONE OMBRELLONE
+          DISATTIVATA" nel file e togli i relativi commenti);
+       3) (facoltativo) il form tavolo qui sotto resta separato: si
+          riattiva solo se in data.js rimetti prenotazioneTavoloUrl: "".
+================================================================= -->
+<!-- INIZIO BLOCCO DISATTIVATO
 <div class="modal-back" id="modalBack" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
     <button class="modal-x" id="modalX" aria-label="Chiudi">&times;</button>
     <h3 id="modalTitle">Prenota</h3>
     <p class="sub" id="modalSub">Compila e ti apriamo WhatsApp con il messaggio pronto.</p>
 
-    <!-- FORM OMBRELLONE -->
+    [FORM OMBRELLONE]
     <div id="formOmbrellone">
       <div class="field">
         <label for="oNome">Nome</label>
@@ -399,15 +420,9 @@
       </div>
     </div>
 
-    <!-- ============================================================
-         FORM TAVOLO — DISATTIVATO
-         La prenotazione tavolo ora usa il form esterno prenota.html
-         (impostato in data.js -> brand.prenotazioneTavoloUrl).
-         Per RIATTIVARE il vecchio form WhatsApp:
-           1) in data.js rimetti  prenotazioneTavoloUrl: ""
-           2) togli i marcatori di commento qui sotto.
-    ============================================================= -->
-    <!--
+    [FORM TAVOLO — gia disattivato in precedenza: usa il form esterno prenota.html
+     impostato in data.js -> brand.prenotazioneTavoloUrl. Per il vecchio form
+     WhatsApp: rimetti prenotazioneTavoloUrl: "" e ripristina questo blocco.
     <div id="formTavolo" hidden>
       <div class="field">
         <label for="tNome">Nome</label>
@@ -428,12 +443,13 @@
         <input type="time" id="tOra" value="20:30">
       </div>
     </div>
-    -->
+    ]
 
     <button class="btn btn-wa btn-block" id="modalSend" style="margin-top:.5rem">Apri WhatsApp</button>
     <div class="modal-note">Ti stiamo aprendo WhatsApp — premi invio per confermare. Ti confermeremo la disponibilità in chat.</div>
   </div>
 </div>
+FINE BLOCCO DISATTIVATO -->
 
 <script src="data.js"></script>
 <script src="app.js"></script>
