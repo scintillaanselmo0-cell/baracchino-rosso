@@ -30,8 +30,9 @@ const DATA = {
     mapsLink: "https://www.google.com/maps/place/Lido+Baracchino+Rosso/@41.0206,13.9330,15z",
     instagram: "https://www.instagram.com/lido_baracchinorosso/",
     facebook: "https://www.facebook.com/Lidobaracchinorosso/",
-    // URL prenotazione tavolo esterno (es. TheFork). Lascia "" per usare WhatsApp.
-    prenotazioneTavoloUrl: ""
+    // URL prenotazione tavolo. Se compilato, TUTTI i pulsanti "Tavolo / Serata"
+    // aprono questo indirizzo. Lascia "" per tornare al vecchio form WhatsApp.
+    prenotazioneTavoloUrl: "prenota.html?c=baracchino-rosso"
   },
 
   /* --- ORARI DI APERTURA ---------------------------------------------------
