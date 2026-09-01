@@ -230,16 +230,16 @@
   function openModal(which) {
     mode = which;
     const isO = which === "ombrellone";
-    formO.hidden = !isO; formT.hidden = isO;
+    if (formO) formO.hidden = !isO;
+    if (formT) formT.hidden = isO;
     $("#modalTitle").textContent = isO ? "Prenota l'ombrellone" : "Prenota il tavolo";
-    $("#modalSub").textContent = isO
-      ? "Compila e ti apriamo WhatsApp con il messaggio pronto."
-      : "Compila e ti apriamo WhatsApp con il messaggio pronto.";
-    // default data = oggi
+    $("#modalSub").textContent = "Compila e ti apriamo WhatsApp con il messaggio pronto.";
+    // default data = oggi (solo sui campi presenti)
     const today = new Date().toISOString().split("T")[0];
-    $("#oData").min = today; $("#tData").min = today;
-    if (!$("#oData").value) $("#oData").value = today;
-    if (!$("#tData").value) $("#tData").value = today;
+    ["#oData", "#tData"].forEach(sel => {
+      const el = $(sel);
+      if (el) { el.min = today; if (!el.value) el.value = today; }
+    });
     back.classList.add("open");
     document.body.style.overflow = "hidden";
   }
@@ -267,13 +267,16 @@
       const tipo = $("#oTipo").value;
       msg = `Ciao Baracchino Rosso, vorrei prenotare in spiaggia.%0A`
           + `Nome: ${nome}%0AData: ${data}%0APostazioni: ${num}%0ATipo: ${tipo}`;
-    } else {
+    } else if ($("#tNome")) {
+      // ramo usato solo se il form tavolo WhatsApp viene riattivato
       const nome = $("#tNome").value.trim() || "—";
       const pers = $("#tPers").value || "1";
       const data = $("#tData").value ? new Date($("#tData").value + "T00:00:00").toLocaleDateString("it-IT") : "—";
       const ora  = $("#tOra").value || "—";
       msg = `Ciao Baracchino Rosso, vorrei prenotare un tavolo per la serata.%0A`
           + `Nome: ${nome}%0APersone: ${pers}%0AData: ${data}%0AOrario: ${ora}`;
+    } else {
+      return;
     }
     window.open(waBase + "?text=" + msg, "_blank", "noopener");
   });
