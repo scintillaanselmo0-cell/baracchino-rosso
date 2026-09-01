@@ -364,7 +364,7 @@ h1,h2,h3{ font-family:var(--display); font-weight:600; line-height:1.08; letter-
    STICKY BOTTOM BAR (mobile) — due percorsi
    ========================================================================== */
 .dockbar{ position:fixed; bottom:0; left:0; right:0; z-index:70;
-  display:grid; grid-template-columns:1fr 1fr; gap:.5rem;
+  display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:.5rem;
   padding:.55rem .6rem calc(.55rem + env(safe-area-inset-bottom));
   background:rgba(246,240,232,.96); backdrop-filter:blur(12px);
   border-top:1px solid var(--line); box-shadow:0 -6px 24px rgba(0,58,66,.1); }
