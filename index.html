@@ -399,7 +399,15 @@
       </div>
     </div>
 
-    <!-- FORM TAVOLO -->
+    <!-- ============================================================
+         FORM TAVOLO — DISATTIVATO
+         La prenotazione tavolo ora usa il form esterno prenota.html
+         (impostato in data.js -> brand.prenotazioneTavoloUrl).
+         Per RIATTIVARE il vecchio form WhatsApp:
+           1) in data.js rimetti  prenotazioneTavoloUrl: ""
+           2) togli i marcatori di commento qui sotto.
+    ============================================================= -->
+    <!--
     <div id="formTavolo" hidden>
       <div class="field">
         <label for="tNome">Nome</label>
@@ -420,6 +428,7 @@
         <input type="time" id="tOra" value="20:30">
       </div>
     </div>
+    -->
 
     <button class="btn btn-wa btn-block" id="modalSend" style="margin-top:.5rem">Apri WhatsApp</button>
     <div class="modal-note">Ti stiamo aprendo WhatsApp — premi invio per confermare. Ti confermeremo la disponibilità in chat.</div>
