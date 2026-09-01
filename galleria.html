@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="it" data-mondo="generale">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galleria · Baracchino Rosso</title>
+<meta name="description" content="La galleria del Baracchino Rosso: la spiaggia, il tramonto, la terrazza sul mare e i piatti del ristorante a Castel Volturno.">
+<meta name="theme-color" content="#006875">
+<link rel="canonical" href="https://baracchinorosso.it/galleria.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Baracchino Rosso">
+<meta property="og:title" content="Galleria · Baracchino Rosso">
+<meta property="og:description" content="La spiaggia, il tramonto e i piatti del Baracchino Rosso.">
+<meta property="og:image" content="https://baracchinorosso.it/assets/gallery/g-10.webp">
+
+<link rel="icon" type="image/webp" href="assets/brand/logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Stili specifici della pagina galleria */
+  .gal-header{ position:sticky; top:0; z-index:60; background:rgba(246,240,232,.96);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  .gal-header .inner{ max-width:var(--maxw); margin:0 auto; display:flex; align-items:center;
+    justify-content:space-between; gap:1rem; padding:.7rem 1rem; }
+  .gal-back{ display:inline-flex; align-items:center; gap:.4rem; font-weight:600; font-size:.9rem; color:var(--accent-deep); }
+  .gal-back svg{ width:18px; height:18px; }
+  .gal-brand{ display:flex; align-items:center; gap:.5rem; }
+  .gal-brand img{ width:34px; height:34px; border-radius:9px; background:var(--sand); }
+  .gal-brand .bn{ font-family:var(--display); font-weight:600; font-size:1.05rem; line-height:1; }
+  .gal-brand .bt{ font-size:.5rem; letter-spacing:.26em; text-transform:uppercase; color:var(--accent); }
+
+  .gal-hero{ text-align:center; padding:var(--s-6) var(--s-4) var(--s-4); }
+  .gal-hero .eyebrow{ color:var(--accent); }
+  .gal-hero h1{ font-size:clamp(2.4rem,9vw,3.6rem); margin:.3rem 0 .3rem; }
+  .gal-hero p{ color:var(--ink-soft); max-width:46ch; margin:0 auto; }
+
+  .gal-filters{ display:flex; justify-content:center; flex-wrap:wrap; gap:.5rem;
+    padding:0 var(--s-4) var(--s-5); }
+  .gal-filter{ appearance:none; border:1.5px solid var(--line); background:var(--cream-2);
+    color:var(--ink-soft); font-family:var(--body); font-weight:600; font-size:.85rem;
+    padding:.55rem 1.1rem; border-radius:999px; cursor:pointer; transition:all .2s; }
+  .gal-filter:hover{ border-color:var(--accent); color:var(--ink); }
+  .gal-filter.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+
+  .gal-grid{ columns:2; column-gap:var(--s-3); max-width:var(--maxw); margin:0 auto;
+    padding:0 var(--s-4) var(--s-8); }
+  .gal-grid figure{ break-inside:avoid; margin:0 0 var(--s-3); border-radius:var(--radius);
+    overflow:hidden; box-shadow:var(--shadow-soft); background:var(--sand); cursor:zoom-in; }
+  .gal-grid img{ width:100%; height:auto; display:block; transition:transform .5s ease; }
+  .gal-grid figure:hover img{ transform:scale(1.04); }
+  .gal-grid figure.hide{ display:none; }
+  @media (min-width:720px){ .gal-grid{ columns:3; } }
+  @media (min-width:1100px){ .gal-grid{ columns:4; } }
+
+  /* Lightbox */
+  .lb{ position:fixed; inset:0; z-index:120; background:rgba(15,22,24,.94);
+    display:none; align-items:center; justify-content:center; padding:1rem; }
+  .lb.open{ display:flex; animation:fade .2s ease; }
+  .lb img{ max-width:100%; max-height:88vh; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,.5); }
+  .lb-close, .lb-nav{ position:absolute; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3);
+    color:#fff; width:48px; height:48px; border-radius:50%; font-size:1.5rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); transition:background .2s; }
+  .lb-close:hover, .lb-nav:hover{ background:rgba(255,255,255,.28); }
+  .lb-close{ top:1rem; right:1rem; }
+  .lb-nav.prev{ left:1rem; top:50%; transform:translateY(-50%); }
+  .lb-nav.next{ right:1rem; top:50%; transform:translateY(-50%); }
+  .lb-count{ position:absolute; bottom:1.2rem; left:50%; transform:translateX(-50%);
+    color:rgba(255,255,255,.85); font-size:.85rem; font-weight:600;
+    background:rgba(0,0,0,.35); padding:.3rem .8rem; border-radius:999px; }
+  @media (max-width:560px){ .lb-nav{ width:42px; height:42px; } }
+</style>
+</head>
+<body>
+<a href="#gal" class="skip">Vai alle foto</a>
+
+<header class="gal-header">
+  <div class="inner">
+    <a class="gal-back" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      Torna al sito
+    </a>
+    <a class="gal-brand" href="index.html" aria-label="Baracchino Rosso">
+      <img src="assets/brand/logo.webp" alt="Logo Baracchino Rosso" width="34" height="34">
+      <span><span class="bn">Baracchino Rosso</span><br><span class="bt">Mediterranean Club</span></span>
+    </a>
+  </div>
+</header>
+
+<section class="gal-hero">
+  <span class="eyebrow">Galleria</span>
+  <h1>Il Baracchino in immagini</h1>
+  <p>La spiaggia, il tramonto sulla terrazza e i piatti del nostro ristorante. Tocca una foto per ingrandirla.</p>
+</section>
+
+<div class="gal-filters" id="galFilters">
+  <button class="gal-filter active" data-cat="tutte">Tutte</button>
+  <button class="gal-filter" data-cat="ambiente">Spiaggia &amp; ambiente</button>
+  <button class="gal-filter" data-cat="piatti">I piatti</button>
+</div>
+
+<main id="gal">
+  <div class="gal-grid" id="galGrid"><!-- JS --></div>
+</main>
+
+<!-- Lightbox -->
+<div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto ingrandita">
+  <button class="lb-close" id="lbClose" aria-label="Chiudi">&times;</button>
+  <button class="lb-nav prev" id="lbPrev" aria-label="Precedente">&#8249;</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav next" id="lbNext" aria-label="Successiva">&#8250;</button>
+  <div class="lb-count" id="lbCount"></div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <img src="assets/brand/logo.webp" alt="Baracchino Rosso" width="64" height="64">
+    <div class="fn">Baracchino Rosso</div>
+    <div class="ft">Mediterranean Club</div>
+    <div class="fmeta"><a href="index.html">Torna al sito</a></div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  "use strict";
+  const grid = document.getElementById("galGrid");
+  const photos = (typeof DATA !== "undefined" && DATA.galleryFull) ? DATA.galleryFull : [];
+  let current = 0;
+  let visible = photos.map((_,i)=>i); // indici attualmente mostrati
+
+  // Render griglia
+  grid.innerHTML = photos.map((p,i) =>
+    `<figure data-cat="${p.cat||''}" data-i="${i}">
+       <img src="${p.src}" alt="${p.alt||''}" loading="lazy" decoding="async">
+     </figure>`
+  ).join("");
+
+  // Filtri
+  document.getElementById("galFilters").addEventListener("click", e => {
+    const btn = e.target.closest(".gal-filter");
+    if (!btn) return;
+    document.querySelectorAll(".gal-filter").forEach(b=>b.classList.toggle("active", b===btn));
+    const cat = btn.dataset.cat;
+    visible = [];
+    document.querySelectorAll("#galGrid figure").forEach(fig => {
+      const show = (cat === "tutte") || (fig.dataset.cat === cat);
+      fig.classList.toggle("hide", !show);
+      if (show) visible.push(parseInt(fig.dataset.i,10));
+    });
+  });
+
+  // Lightbox
+  const lb = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lbImg");
+  const lbCount = document.getElementById("lbCount");
+  function openLb(idx){
+    current = idx;
+    const p = photos[current];
+    lbImg.src = p.src; lbImg.alt = p.alt || "";
+    const pos = visible.indexOf(current);
+    lbCount.textContent = (pos+1) + " / " + visible.length;
+    lb.classList.add("open"); document.body.style.overflow = "hidden";
+  }
+  function closeLb(){ lb.classList.remove("open"); document.body.style.overflow=""; lbImg.src=""; }
+  function step(dir){
+    const pos = visible.indexOf(current);
+    const next = (pos + dir + visible.length) % visible.length;
+    openLb(visible[next]);
+  }
+  grid.addEventListener("click", e => {
+    const fig = e.target.closest("figure");
+    if (fig) openLb(parseInt(fig.dataset.i,10));
+  });
+  document.getElementById("lbClose").addEventListener("click", closeLb);
+  document.getElementById("lbPrev").addEventListener("click", ()=>step(-1));
+  document.getElementById("lbNext").addEventListener("click", ()=>step(1));
+  lb.addEventListener("click", e => { if (e.target === lb) closeLb(); });
+  document.addEventListener("keydown", e => {
+    if (!lb.classList.contains("open")) return;
+    if (e.key === "Escape") closeLb();
+    if (e.key === "ArrowLeft") step(-1);
+    if (e.key === "ArrowRight") step(1);
+  });
+})();
+</script>
+</body>
+</html>
