@@ -222,19 +222,24 @@
   const onScroll = () => header.classList.toggle("scrolled", window.scrollY > 40);
   onScroll(); window.addEventListener("scroll", onScroll, { passive: true });
 
-  /* ---------- MODALE PRENOTAZIONE + WHATSAPP ----------------------------- */
+  /* ---------- PRENOTAZIONE ------------------------------------------------
+     - TAVOLO: apre il form esterno (brand.prenotazioneTavoloUrl).
+     - OMBRELLONE: aprirebbe la modale WhatsApp, ORA DISATTIVATA (la modale
+       è commentata in index.html). Il codice resta e si riattiva da solo
+       se la modale torna nel DOM. Tutti i riferimenti sono null-safe.
+  ------------------------------------------------------------------------- */
   const back = $("#modalBack");
   const formO = $("#formOmbrellone"), formT = $("#formTavolo");
   let mode = "ombrellone";
 
   function openModal(which) {
+    if (!back) return;                 // modale non presente: non fa nulla
     mode = which;
     const isO = which === "ombrellone";
     if (formO) formO.hidden = !isO;
     if (formT) formT.hidden = isO;
-    $("#modalTitle").textContent = isO ? "Prenota l'ombrellone" : "Prenota il tavolo";
-    $("#modalSub").textContent = "Compila e ti apriamo WhatsApp con il messaggio pronto.";
-    // default data = oggi (solo sui campi presenti)
+    const t = $("#modalTitle"); if (t) t.textContent = isO ? "Prenota l'ombrellone" : "Prenota il tavolo";
+    const s = $("#modalSub");   if (s) s.textContent = "Compila e ti apriamo WhatsApp con il messaggio pronto.";
     const today = new Date().toISOString().split("T")[0];
     ["#oData", "#tData"].forEach(sel => {
       const el = $(sel);
@@ -243,9 +248,12 @@
     back.classList.add("open");
     document.body.style.overflow = "hidden";
   }
-  function closeModal() { back.classList.remove("open"); document.body.style.overflow = ""; }
+  function closeModal() {
+    if (!back) return;
+    back.classList.remove("open"); document.body.style.overflow = "";
+  }
 
-  // Se esiste un URL esterno per il tavolo, il tasto "tavolo" ci va diretto.
+  // Tasto tavolo -> form esterno; tasto ombrellone -> modale (se presente).
   function handleOpen(which) {
     if (which === "tavolo" && B.prenotazioneTavoloUrl) {
       window.open(B.prenotazioneTavoloUrl, "_blank", "noopener");
@@ -254,32 +262,36 @@
     openModal(which);
   }
   $$("[data-open]").forEach(b => b.addEventListener("click", () => handleOpen(b.dataset.open)));
-  $("#modalX").addEventListener("click", closeModal);
-  back.addEventListener("click", e => { if (e.target === back) closeModal(); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && back.classList.contains("open")) closeModal(); });
 
-  $("#modalSend").addEventListener("click", () => {
-    let msg = "";
-    if (mode === "ombrellone") {
-      const nome = $("#oNome").value.trim() || "—";
-      const data = $("#oData").value ? new Date($("#oData").value + "T00:00:00").toLocaleDateString("it-IT") : "—";
-      const num  = $("#oNum").value || "1";
-      const tipo = $("#oTipo").value;
-      msg = `Ciao Baracchino Rosso, vorrei prenotare in spiaggia.%0A`
-          + `Nome: ${nome}%0AData: ${data}%0APostazioni: ${num}%0ATipo: ${tipo}`;
-    } else if ($("#tNome")) {
-      // ramo usato solo se il form tavolo WhatsApp viene riattivato
-      const nome = $("#tNome").value.trim() || "—";
-      const pers = $("#tPers").value || "1";
-      const data = $("#tData").value ? new Date($("#tData").value + "T00:00:00").toLocaleDateString("it-IT") : "—";
-      const ora  = $("#tOra").value || "—";
-      msg = `Ciao Baracchino Rosso, vorrei prenotare un tavolo per la serata.%0A`
-          + `Nome: ${nome}%0APersone: ${pers}%0AData: ${data}%0AOrario: ${ora}`;
-    } else {
-      return;
-    }
-    window.open(waBase + "?text=" + msg, "_blank", "noopener");
-  });
+  // Listener della modale: si agganciano solo se la modale è nel DOM.
+  if (back) {
+    const x = $("#modalX"); if (x) x.addEventListener("click", closeModal);
+    back.addEventListener("click", e => { if (e.target === back) closeModal(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && back.classList.contains("open")) closeModal(); });
+
+    const send = $("#modalSend");
+    if (send) send.addEventListener("click", () => {
+      let msg = "";
+      if (mode === "ombrellone" && $("#oNome")) {
+        const nome = $("#oNome").value.trim() || "—";
+        const data = $("#oData").value ? new Date($("#oData").value + "T00:00:00").toLocaleDateString("it-IT") : "—";
+        const num  = $("#oNum").value || "1";
+        const tipo = $("#oTipo").value;
+        msg = `Ciao Baracchino Rosso, vorrei prenotare in spiaggia.%0A`
+            + `Nome: ${nome}%0AData: ${data}%0APostazioni: ${num}%0ATipo: ${tipo}`;
+      } else if ($("#tNome")) {
+        const nome = $("#tNome").value.trim() || "—";
+        const pers = $("#tPers").value || "1";
+        const data = $("#tData").value ? new Date($("#tData").value + "T00:00:00").toLocaleDateString("it-IT") : "—";
+        const ora  = $("#tOra").value || "—";
+        msg = `Ciao Baracchino Rosso, vorrei prenotare un tavolo per la serata.%0A`
+            + `Nome: ${nome}%0APersone: ${pers}%0AData: ${data}%0AOrario: ${ora}`;
+      } else {
+        return;
+      }
+      window.open(waBase + "?text=" + msg, "_blank", "noopener");
+    });
+  }
 
   /* ---------- METEO (Open-Meteo, senza chiave) --------------------------- */
   (function weather() {
