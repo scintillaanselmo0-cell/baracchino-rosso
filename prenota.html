@@ -387,9 +387,19 @@ function showDone(name,date,time){
     <div class="body"><div class="done">
       <div class="tick">✓</div>
       <h2>Richiesta inviata!</h2>
-      <p>Grazie ${esc(name.split(" ")[0])}. Abbiamo ricevuto la tua richiesta per <b>${esc(d)}</b> alle <b>${esc(time)}</b>.<br>L'attività ti confermerà a breve. Nel frattempo, <a href="/" style="color:var(--cta); font-weight:700">torna al sito</a>.</p>
+      <p>Grazie ${esc(name.split(" ")[0])}. Abbiamo ricevuto la tua richiesta per <b>${esc(d)}</b> alle <b>${esc(time)}</b>.<br>L'attività ti confermerà a breve. Nel frattempo, <a href="#" id="backSite" style="color:var(--cta); font-weight:700">torna al sito</a>.</p>
       <button class="again" onclick="location.reload()">Nuova prenotazione</button>
     </div></div>`;
+  const back=$("#backSite");
+  if(back) back.addEventListener("click", (e)=>{
+    e.preventDefault();
+    // 1) se sei arrivato da una pagina del sito, torna lì
+    try{
+      if(document.referrer && new URL(document.referrer).origin === location.origin){ location.href=document.referrer; return; }
+    }catch(_){}
+    // 2) altrimenti vai alla home del sito (la cartella che contiene il form)
+    location.href = location.pathname.replace(/[^/]*$/, "");
+  });
 }
 </script>
 </body>
